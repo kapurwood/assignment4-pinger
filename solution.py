@@ -156,55 +156,28 @@ def ping(host, timeout=1):
     # timeout=1 means: If one second goes by without a reply from the server,
 
     # the client assumes that either the client's ping or the server's pong is lost
+    dest = gethostbyname(host)
+    print("Pinging " + dest + " using Python:")
+    print("")
+    vars = []
+    temp = []
+    # Calculate vars values and return them
+    #  vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2)),str(round(stdev(stdev_var), 2))]
+    # Send ping requests to a server separated by approximately one second
+    for i in range(0, 4):
+        delay = doOnePing(dest, timeout) * 1000 * 1000
+        # print("delay:")
+        print(delay)
+        temp.append(delay)
+        time.sleep(1)  # one second
 
-    flag = False
+    vars = [str(round(min(temp), 2)), str(round((sum(temp) / len(temp)), 2)), str(round(max(temp), 2)),
+            str(round(statistics.stdev(temp), 2))]
+    print(vars)
 
-    try:
+    return vars
 
-        dest = gethostbyname(host)
 
-        print("Pinging " + dest + " using Python:")
-
-        print("")
-
-        flag = True
-
-    except:
-
-        print("address is not valid")
-
-        delay_list = []
-
-        # Send ping requests to a server separated by approximately one second
-
-        # Add something here to collect the delays of each ping in a list so you can calculate vars after your ping
-
-        for i in range(0, 4):  # Four pings will be sent (loop runs for i=0, 1, 2, 3)
-
-            if flag:
-
-                delay = doOnePing(dest, timeout)
-
-                delay = delay * 1000
-
-            else:
-
-                delay = 0
-
-            print(delay)
-
-            delay_list.append(delay)
-
-            time.sleep(1)  # one second
-
-        # You should have the values of delay for each ping here; fill in calculation for packet_min, packet_avg, packet_max, and stdev
-
-        vars = [str(round(min(delay_list), 8)), str(round(sum(delay_list) / len(delay_list), 8)),
-                str(round(max(delay_list), 8)), str(round(statistics.stdev(delay_list), 8))]
-
-        print(vars)
-
-        return vars
-
-    if __name__ == '__main__':
-        ping("google.co.il")
+if __name__ == '__main__':
+    ping("google.co.il")
+    
